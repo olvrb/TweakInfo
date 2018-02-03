@@ -30,20 +30,57 @@ namespace repo_explorer {
                 return reader.ReadToEnd();
             }
         }
-        
+        class package
+        {
+            public string name;
+            public string display;
+            public string section;
+            public string summary;
+            public string version;
+            public string url;
+
+            public package(string name, string display, string section, string summary, string version) {
+                this.name = (name != null ? name : "");
+                this.display = display;
+                this.section = section;
+                this.summary = summary;
+                this.version = version;
+                this.url = "http://cydia.saurik.com/package/" + this.name;
+            }
+            public override string ToString() {
+                return this.display;
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e) {
-            richTextBox1.Text = "Getting information, please wait...";
+            //richTextBox1.Text = "Getting information, please wait...";
             string response = Get("https://cydia.saurik.com/api/macciti?query=" + Uri.EscapeUriString(textBox1.Text));
-            Object packages = JObject.Parse(response);
-            richTextBox1.Text = packages.results[0];
+            JObject packages = JObject.Parse(response);
+            JToken data = packages["results"];
+            listBox1.BeginUpdate(); // speed
+            listBox1.Items.Clear();
+            foreach (JToken obj in data) {
+                package pack = new package(
+                    obj["name"].Value<string>(),
+                    obj["display"].Value<string>(),
+                    obj["section"].Value<string>(),
+                    obj["summary"].Value<string>(),
+                    obj["version"].Value<string>()
+                );
+                listBox1.Items.Add(pack);
+            }
+            listBox1.EndUpdate(); // speed
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) {
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+            package selected = listBox1.SelectedItem as package;
 
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e) {
+            Console.WriteLine(selected);
+            
+            /*
+             * Access using selected.name, selected.display, selected.section, etc
+             * Have fun oliver lol
+             */
 
         }
     }
