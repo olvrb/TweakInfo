@@ -53,8 +53,9 @@ namespace repo_explorer {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            //richTextBox1.Text = "Getting information, please wait...";
+            richTextBox1.Text = "Getting information, please wait...";
             string response = Get("https://cydia.saurik.com/api/macciti?query=" + Uri.EscapeUriString(textBox1.Text));
+            richTextBox1.Text = "Select a package.";
             JObject packages = JObject.Parse(response);
             JToken data = packages["results"];
             listBox1.BeginUpdate(); // speed
@@ -66,6 +67,7 @@ namespace repo_explorer {
                     obj["section"].Value<string>(),
                     obj["summary"].Value<string>(),
                     obj["version"].Value<string>()
+                    //obj["price"].Value<string>()
                 );
                 listBox1.Items.Add(pack);
             }
@@ -75,12 +77,26 @@ namespace repo_explorer {
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
             package selected = listBox1.SelectedItem as package;
 
-            Console.WriteLine(selected);
-            
+            Console.WriteLine(selected.summary);
+            richTextBox1.Text =
+                "Name: " + selected.display + "\n" +                 
+                "Display name: " + selected.name + "\n" +            //
+                "Section:" + selected.section + "\n" +               // There are probably better ways to do this without linebreaks.
+                "Summary: " + selected.summary + "\n" +              //
+                "Latest version: " + selected.version + "\n" + 
+                "URL: " + "http://cydia.saurik.com/package/" + selected.name;
             /*
              * Access using selected.name, selected.display, selected.section, etc
              * Have fun oliver lol
              */
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e) {
+
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e) {
 
         }
     }
