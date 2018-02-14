@@ -71,6 +71,7 @@ namespace repo_explorer {
                 );
                 listBox1.Items.Add(pack);
             }
+            if (listBox1.Items.Count == 0) richTextBox1.Text = "No results found.";
             listBox1.EndUpdate(); // speed
         }
 
@@ -98,6 +99,16 @@ namespace repo_explorer {
 
         private void richTextBox1_TextChanged(object sender, EventArgs e) {
 
+        }
+
+        private void textBox1_Enter(object sender, EventArgs e) {
+            button1_Click(sender, e);
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == (char)13) {
+                button1_Click(sender, e);
+            }
         }
     }
 }
